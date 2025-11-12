@@ -16,6 +16,7 @@ function search(){
         document.getElementById("region").innerText = data[0].region
         document.getElementById("area").innerText =  data[0].area
         document.getElementById("population").innerText =  data[0].population
+        document.getElementById("continent").innerText = data[0].continents[0]
         document.getElementById("currency").innerText = Object.keys(data[0].currencies)[0]
         document.getElementById("language").innerText = Object.values(data[0].languages).join(", ")
         document.getElementById("timeZone").innerText = data[0].timezones[0]

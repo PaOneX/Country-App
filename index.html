@@ -11,43 +11,268 @@
       crossorigin="anonymous"
     />
     <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+      
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      
       body {
-        background: #f5f7fb;
-        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: #0f172a;
+        font-family: 'Inter', sans-serif;
+        min-height: 100vh;
+        position: relative;
+        overflow-x: hidden;
       }
+      
+      body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: 
+          radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+          radial-gradient(circle at 80% 80%, rgba(59, 130, 246, 0.3) 0%, transparent 50%),
+          radial-gradient(circle at 40% 90%, rgba(139, 92, 246, 0.2) 0%, transparent 50%);
+        pointer-events: none;
+        z-index: 0;
+      }
+      
       .navbar {
-        background: #ffffff;
-        box-shadow: 0 1px 6px rgba(0, 0, 0, 0.08);
+        background: rgba(15, 23, 42, 0.8);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 1rem 0;
+        position: relative;
+        z-index: 10;
       }
+      
       .navbar-brand {
         font-weight: 700;
-        color: #333;
+        font-size: 1.5rem;
+        color: #fff !important;
+        letter-spacing: -0.5px;
       }
+      
       .search-row {
-        margin-top: 1.5rem;
-        margin-bottom: 1.5rem;
+        margin-top: 3rem;
+        margin-bottom: 3rem;
+        position: relative;
+        z-index: 1;
       }
+      
+      .input-group {
+        position: relative;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        overflow: hidden;
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+      }
+      
+      .input-group:hover {
+        border-color: rgba(255, 255, 255, 0.2);
+        background: rgba(255, 255, 255, 0.08);
+      }
+      
+      .input-group .form-control {
+        border: none;
+        background: transparent;
+        padding: 18px 24px;
+        font-size: 1rem;
+        color: #fff;
+        font-weight: 500;
+      }
+      
+      .input-group .form-control::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+      }
+      
+      .input-group .form-control:focus {
+        box-shadow: none;
+        background: transparent;
+        color: #fff;
+      }
+      
+      .input-group .btn {
+        border: none;
+        padding: 18px 32px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+      
+      .input-group .btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+      
+      .input-group .btn:hover::before {
+        opacity: 1;
+      }
+      
+      .input-group .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.5);
+      }
+      
+      .input-group .btn span {
+        position: relative;
+        z-index: 1;
+      }
+      
       .card-compact {
-        border-radius: 10px;
-        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+        border-radius: 24px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(20px);
+        overflow: hidden;
+        transition: all 0.4s ease;
+        position: relative;
+        z-index: 1;
       }
+      
+      .card-compact::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 200px;
+        background: linear-gradient(180deg, rgba(102, 126, 234, 0.1) 0%, transparent 100%);
+        pointer-events: none;
+      }
+      
+      .card-compact:hover {
+        transform: translateY(-8px);
+        border-color: rgba(255, 255, 255, 0.2);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+      }
+      
+      .card-body {
+        padding: 2.5rem;
+        position: relative;
+      }
+      
+      #flag {
+        margin-bottom: 2rem;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+        position: relative;
+      }
+      
+      #flag::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border: 2px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        pointer-events: none;
+      }
+      
       #flag img {
         max-width: 100%;
-        border-radius: 6px;
+        border-radius: 16px;
+        transition: transform 0.4s ease;
+        display: block;
       }
+      
+      .card-compact:hover #flag img {
+        transform: scale(1.05);
+      }
+      
+      #name {
+        color: #fff;
+        font-weight: 700;
+        margin-bottom: 2rem;
+        font-size: 2rem;
+        letter-spacing: -0.5px;
+      }
+      
+      hr {
+        margin: 2rem 0;
+        border: none;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      }
+      
+      .text-start > div {
+        padding: 16px 20px;
+        margin-bottom: 8px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      
+      .text-start > div:hover {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.15);
+        transform: translateX(8px);
+      }
+      
       .detail-label {
-        color: #6c757d;
-        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 0.875rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
       }
+      
       .detail-value {
         font-weight: 600;
+        color: #fff;
+        font-size: 1rem;
+        text-align: right;
+      }
+      
+      @media (max-width: 768px) {
+        .card-body {
+          padding: 2rem 1.5rem;
+        }
+        
+        #name {
+          font-size: 1.5rem;
+        }
+        
+        .text-start > div {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 8px;
+        }
+        
+        .detail-value {
+          text-align: left;
+        }
       }
     </style>
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-light sticky-top">
       <div class="container-fluid px-4">
-        <a class="navbar-brand" href="#"> Countries App</a>
+        <a class="navbar-brand" href="#"> Countries</a>
         <button
           class="navbar-toggler"
           type="button"
@@ -70,7 +295,7 @@
               id="searchCountry"
               type="text"
               class="form-control"
-              placeholder="Enter country name..."
+              placeholder="Search for a country..."
               aria-label="Search country"
             />
             <button
@@ -78,7 +303,7 @@
               type="button"
               onclick="search()"
             >
-              Search
+              <span>Search</span>
             </button>
           </div>
         </div>
@@ -87,53 +312,57 @@
 
     <div class="container my-4">
       <div class="row justify-content-center">
-        <div class="col-12 col-md-6 col-lg-4">
+        <div class="col-12 col-md-10 col-lg-8">
           <div class="card card-compact">
             <div class="card-body text-center">
-              <div id="flag" class="mb-3"></div>
+              <div id="flag" class="mb-2 p-2 d-flex justify-content-center align-content-center"></div>
               <h4 id="name" class="card-title">
                 Select a country to view details
               </h4>
               <hr />
               <div class="text-start">
-                <div class="mb-2">
-                  <span class="detail-label">Official Name:</span>
+                <div>
+                  <span class="detail-label">Official Name</span>
                   <span id="officialName" class="detail-value">-</span>
                 </div>
-                <div class="mb-2">
-                  <span class="detail-label">Native Name:</span>
+                <div>
+                  <span class="detail-label">Native Name</span>
                   <span id="nativeName" class="detail-value">-</span>
                 </div>
-                <div class="mb-2">
-                  <span class="detail-label">Capital:</span>
+                <div>
+                  <span class="detail-label">Capital</span>
                   <span id="capital" class="detail-value">-</span>
                 </div>
-                <div class="mb-2">
-                  <span class="detail-label">Region:</span>
+                <div>
+                  <span class="detail-label">Region</span>
                   <span id="region" class="detail-value">-</span>
                 </div>
-                <div class="mb-2">
-                  <span class="detail-label">Area:</span>
+                <div>
+                  <span class="detail-label">Area</span>
                   <span id="area" class="detail-value">-</span>
                 </div>
-                <div class="mb-2">
-                  <span class="detail-label">Population:</span>
+                <div>
+                  <span class="detail-label">Population</span>
                   <span id="population" class="detail-value">-</span>
                 </div>
-                <div class="mb-2">
-                  <span class="detail-label">Currency:</span>
+                <div>
+                  <span class="detail-label">Continent</span>
+                  <span id="continent" class="detail-value">-</span>
+                </div>
+                <div>
+                  <span class="detail-label">Currency</span>
                   <span id="currency" class="detail-value">-</span>
                 </div>
-                <div class="mb-2">
-                  <span class="detail-label">Languages:</span>
+                <div>
+                  <span class="detail-label">Languages</span>
                   <span id="language" class="detail-value">-</span>
                 </div>
-                <div class="mb-2">
-                  <span class="detail-label">Time Zone:</span>
+                <div>
+                  <span class="detail-label">Time Zone</span>
                   <span id="timeZone" class="detail-value">-</span>
                 </div>
-                <div class="mb-2">
-                  <span class="detail-label">Location:</span>
+                <div>
+                  <span class="detail-label">Location</span>
                   <span id="location" class="detail-value">-</span>
                 </div>
               </div>
