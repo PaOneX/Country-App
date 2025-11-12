@@ -25,6 +25,7 @@
         min-height: 100vh;
         position: relative;
         overflow-x: hidden;
+        transition: background 0.8s ease;
       }
       
       body::before {
@@ -40,6 +41,7 @@
           radial-gradient(circle at 40% 90%, rgba(139, 92, 246, 0.2) 0%, transparent 50%);
         pointer-events: none;
         z-index: 0;
+        transition: opacity 0.8s ease;
       }
       
       .navbar {
@@ -292,7 +294,7 @@
         <div class="col-12 col-md-8 col-lg-6">
           <div class="input-group">
             <input
-              id="searchCountry"
+              id="searchCity"
               type="text"
               class="form-control"
               placeholder="Search for a country..."
@@ -315,7 +317,8 @@
         <div class="col-12 col-md-10 col-lg-8">
           <div class="card card-compact">
             <div class="card-body text-center">
-              <div id="flag" class="mb-2 p-2 d-flex justify-content-center align-content-center"></div>
+              <div id="flag" class="mb-2 p-2 d-flex justify-content-center align-content-center"></div> 
+              <div id="symbol" class="mb-2 p-2 d-flex justify-content-center align-content-center"></div> 
               <h4 id="name" class="card-title">
                 Select a country to view details
               </h4>
@@ -378,5 +381,97 @@
       crossorigin="anonymous"
     ></script>
     <script src="app.js"></script>
+    <script>
+      // Function to extract dominant colors from flag image
+      function extractColorsFromFlag() {
+        const flagImg = document.querySelector('#flag img');
+        if (!flagImg || !flagImg.complete) return;
+
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = flagImg.naturalWidth || flagImg.width;
+        canvas.height = flagImg.naturalHeight || flagImg.height;
+        
+        ctx.drawImage(flagImg, 0, 0, canvas.width, canvas.height);
+        
+            try {
+              const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+              const pixels = imageData.data;
+
+              const colorMap = {};
+
+              // Sample pixels (every 10th pixel for performance)
+              for (let i = 0; i < pixels.length; i += 40) {
+                const r = pixels[i];
+                const g = pixels[i + 1];
+                const b = pixels[i + 2];
+                const a = pixels[i + 3];
+
+                // Skip transparent pixels and very light/dark colors
+                if (a < 125 || (r > 240 && g > 240 && b > 240) || (r < 15 && g < 15 && b < 15)) continue;
+
+                const key = `${Math.floor(r / 10) * 10},${Math.floor(g / 10) * 10},${Math.floor(b / 10) * 10}`;
+                colorMap[key] = (colorMap[key] || 0) + 1;
+              }
+
+              // Get top 3 colors
+              const sortedColors = Object.entries(colorMap)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 3)
+                .map(([color]) => {
+                  const [r, g, b] = color.split(',').map(Number);
+                  return { r, g, b };
+                });
+
+              if (sortedColors.length > 0) {
+                applyDynamicBackground(sortedColors);
+              }
+            } catch (e) {
+              // Most likely a CORS restriction on the flag image; canvas read will fail if the image isn't CORS-enabled
+              console.warn('Could not extract colors from flag (possible CORS or tainted canvas):', e.message || e);
+            }
+      }
+      
+      function applyDynamicBackground(colors) {
+        const body = document.body;
+
+        if (colors.length >= 1) {
+          const [c1, c2 = c1, c3 = c1] = colors;
+
+          // Create gradient background from top colors
+          const gradient = `radial-gradient(circle at 20% 50%, rgba(${c1.r}, ${c1.g}, ${c1.b}, 0.35) 0%, transparent 50%),
+            radial-gradient(circle at 80% 80%, rgba(${c2.r}, ${c2.g}, ${c2.b}, 0.28) 0%, transparent 50%),
+            radial-gradient(circle at 40% 90%, rgba(${c3.r}, ${c3.g}, ${c3.b}, 0.22) 0%, transparent 50%)`;
+
+          // Update body base background to a darker shade of the dominant color
+          body.style.background = `rgb(${Math.floor(c1.r * 0.12)}, ${Math.floor(c1.g * 0.12)}, ${Math.floor(c1.b * 0.12)})`;
+
+          // Update or create a single style tag for the ::before pseudo-element
+          let dyn = document.getElementById('dynamic-bg-style');
+          if (!dyn) {
+            dyn = document.createElement('style');
+            dyn.id = 'dynamic-bg-style';
+            document.head.appendChild(dyn);
+          }
+          dyn.textContent = `body::before { background: ${gradient} !important; }`;
+        }
+      }
+      
+      // Watch for flag image changes
+      const flagContainer = document.getElementById('flag');
+      const observer = new MutationObserver(() => {
+        const flagImg = flagContainer.querySelector('img');
+        if (flagImg) {
+          if (flagImg.complete) {
+            extractColorsFromFlag();
+          } else {
+            flagImg.onload = extractColorsFromFlag;
+          }
+        }
+      });
+      
+      observer.observe(flagContainer, { childList: true, subtree: true });
+    </script>
   </body>
 </html>
